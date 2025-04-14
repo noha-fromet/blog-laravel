@@ -23,5 +23,21 @@
         @endforelse
     </p>
 
-    <a href="{{ route('home') }}" class="btn btn-secondary mt-4">← Retour à l'accueil</a>
+    <!-- Boutons Supprimer et Modifier -->
+    <div class="mt-4">
+        <form action="{{ route('articles.destroy', $article->id) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-danger"
+                onclick="return confirm('Es-tu sûr de vouloir supprimer cet article ?')">
+                Supprimer cet article
+            </button>
+        </form>
+
+        <a href="{{ route('articles.edit', $article) }}" class="btn btn-primary ml-2">
+            Modifier cet article
+        </a>
+    </div>
+
+    <a href="{{ route('home') }}" class="btn btn-secondary mt-4 d-inline-block">← Retour à l'accueil</a>
 @endsection

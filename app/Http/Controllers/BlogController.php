@@ -38,13 +38,4 @@ class BlogController extends Controller
         $articles = $keyword->articles;  // Récupérer les articles associés au mot-clé
         return view('blog.keyword', compact('keyword', 'articles'));  // Passer les articles à la vue
     }
-
-    // Méthode pour supprimer un article
-    public function destroy($id)
-    {
-        $article = Article::findOrFail($id);
-        $article->delete();
-
-        return redirect()->route('home'); // Redirection vers la liste des articles
-    }
 }

@@ -19,38 +19,36 @@ class ArticleController extends Controller
             $article->formatted_date = $article->created_at->format('d M Y');
         }
 
-        return view('blog.index', compact('articles')); // Affichage via la vue blog.index
+        return view('blog.index', compact('articles'));
     }
 
     // Afficher le formulaire de création d'un article
     public function create()
     {
-        $categories = Category::all(); // Récupérer toutes les catégories
-        $keywords = Keyword::all(); // Récupérer tous les mots-clés
+        $categories = Category::all();
+        $keywords = Keyword::all();
 
-        return view('articles.create', compact('categories', 'keywords')); // Passer les catégories et mots-clés à la vue
+        // Aucune variable $article nécessaire ici
+        return view('articles.create', compact('categories', 'keywords'));
     }
 
     // Enregistrer un nouvel article
     public function store(Request $request)
     {
-        // Validation des données de l'article
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'keywords' => 'nullable|array', // Validation pour les mots-clés
-            'keywords.*' => 'exists:keywords,id', // Validation des mots-clés
+            'keywords' => 'nullable|array',
+            'keywords.*' => 'exists:keywords,id',
         ]);
 
-        // Créer l'article
         $article = Article::create([
             'title' => $validated['title'],
             'content' => $validated['content'],
             'category_id' => $validated['category_id'],
         ]);
 
-        // Associer les mots-clés à l'article
         if ($request->has('keywords')) {
             $article->keywords()->sync($validated['keywords']);
         }
@@ -58,7 +56,6 @@ class ArticleController extends Controller
         return redirect()->route('home')->with('success', 'Article créé avec succès');
     }
 
-    // Créer un nouveau mot-clé depuis le site
     public function createKeyword(Request $request)
     {
         $validated = $request->validate([
@@ -69,7 +66,6 @@ class ArticleController extends Controller
             'name' => $validated['name'],
         ]);
 
-        // Récupérer tous les mots-clés existants
         $keywords = Keyword::all();
 
         return redirect()->route('articles.create')->with([
@@ -78,7 +74,6 @@ class ArticleController extends Controller
         ]);
     }
 
-    // Créer une nouvelle catégorie depuis le site
     public function createCategory(Request $request)
     {
         $validated = $request->validate([
@@ -90,5 +85,46 @@ class ArticleController extends Controller
         ]);
 
         return redirect()->route('articles.create')->with('success', 'Catégorie créée avec succès');
+    }
+
+    // Suppression d'un article
+    public function destroy(Article $article)
+    {
+        $article->delete();
+        return redirect()->route('articles.index')->with('success', 'Article supprimé avec succès');
+    }
+
+    // Afficher le formulaire d’édition
+    public function edit(Article $article)
+    {
+        $categories = Category::all();
+        $keywords = Keyword::all();
+        return view('articles.edit', compact('article', 'categories', 'keywords'));
+    }
+
+    // Mettre à jour l’article
+    public function update(Request $request, Article $article)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'keywords' => 'nullable|array',
+            'keywords.*' => 'exists:keywords,id',
+        ]);
+
+        $article->update([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'category_id' => $validated['category_id'],
+        ]);
+
+        if ($request->has('keywords')) {
+            $article->keywords()->sync($validated['keywords']);
+        } else {
+            $article->keywords()->detach(); // Enlever les anciens mots-clés
+        }
+
+        return redirect()->route('articles.index')->with('success', 'Article modifié avec succès');
     }
 }

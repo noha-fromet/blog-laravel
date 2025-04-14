@@ -25,11 +25,17 @@ Route::post('/articles', [ArticleController::class, 'store'])->name('articles.st
 // Route pour afficher la liste des articles
 Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
 
-// Route pour créer un mot-cle depuis le site
+// Route pour creer un mot-cle depuis le site
 Route::post('/articles/create-keyword', [ArticleController::class, 'createKeyword'])->name('articles.createKeyword');
 
 // Route pour créer une nouvelle catégorie
-Route::post('/articles/create-category', [ArticleController::class, 'createCategory'])->name('articles.createCategory');
+Route::post('/articles/create-category', [ArticleController::class, 'createCategory'])->name('articles.createCategory'); // Ajout de la route pour créer une catégorie
 
 // Route pour supprimer un article
-Route::delete('/article/{id}', [BlogController::class, 'destroy'])->name('articles.destroy');
+Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
+
+// Route pour afficher le formulaire de modification d'un article
+Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
+
+// Route pour mettre à jour un article
+Route::put('/articles/{article}', [ArticleController::class, 'update'])->name('articles.update');

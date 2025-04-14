@@ -28,16 +28,7 @@
                     </p>
                 @endif
 
-                <!-- Lien pour lire la suite de l'article -->
                 <a href="{{ route('article', $article->id) }}" class="btn btn-primary">Lire la suite</a>
-
-                <!-- Formulaire de suppression -->
-                <form action="{{ route('articles.destroy', $article->id) }}" method="POST" class="mt-2"
-                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger">Supprimer</button>
-                </form>
             </div>
         </div>
     @endforeach
